@@ -1,7 +1,6 @@
 <?php
 
-require 'lib/Slim/Slim.php';
-\Slim\Slim::registerAutoloader();
+require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
 

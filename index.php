@@ -10,9 +10,23 @@ $app->get('/location/:id', function ($id) {
     
     $location = new Model\Location();
     
-    $locationId = $location->getLocationById(1);
+    $locationInfo = $location->getLocationById($id);
+   
+    echo $locationInfo;
     
-    echo $locationId;
+});
+
+$app->get('/location', function () {
+    
+    include 'lib/Model/Location.php';
+    
+    $location = new Model\Location();
+    
+    $amenity = $_GET['amenity'];
+    
+    $locations = $location->getLocationsByAmenity($amenity);
+    
+    echo $locations;
     
 });
 

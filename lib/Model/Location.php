@@ -3,26 +3,20 @@
 namespace Model;
 
 class Location {
-
-	public $id;
-	public $name;
-	public $address;
-	public $city;
-	public $province;
-	public $lat;
-	public $lng;
-	public $externalId;
-	public $externalUrl;
-	public $description;
-	public $schedule;
-	public $tags;
-	public $cost;
-	public $likes;
-	public $phone;
 	
-	public function getLocationById() {
+	public function getLocationById($id) {
 		
-		echo "Looking for location with ID ". $this->id; 
+		$id = $id + 1;
+		
+		return $id;
+		
+	}
+	
+	public function getLocationsByAmenity($amenity) {
+		
+		$info = 'A list of locations that have '. $amenity;
+		
+		return $info;
 		
 	}
 

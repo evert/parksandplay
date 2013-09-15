@@ -1,5 +1,15 @@
 <?php
 
+// define the site path constant
+
+$site_path = realpath(dirname(__FILE__));
+define ('__SITE_PATH', $site_path);
+
+$config_path = realpath(dirname($_SERVER['DOCUMENT_ROOT']));
+define ('__CONFIG_PATH', $config_path);
+
+// load packages
+
 require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();

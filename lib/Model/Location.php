@@ -29,82 +29,71 @@ class Location {
 				die("Invalid query: " . $mysqli->error);
 			
 			} else {
+				
+				$obj = $result->fetch_object();
+				
+				// add some other handy version of the name
+				
+				$obj->shortname = str_replace(' ', '', $obj->name);
+				$urlName = str_replace(' ', '-', $obj->name);
+				$obj->urlName = str_replace('.', '', $urlName);
+				
+				// create array of amenities
+				
+				$i = 0;
+				
+				while ($finfo = $result->fetch_field()) {
 			
-				$i = 0; //for iterating the amenities array
-		
-				/* fetch object array */
-				while ($obj = $result->fetch_object()) {
-				
-					while ($finfo = $result->fetch_field()) {
-				
-				        $amenityName = $finfo->name;
-				                
-				        if (substr($amenityName, 0, 3) == "has") {
-				        
-				        	if ($obj->$amenityName == 1) {
-					        	
-					        	$amenitiesDb[$i] = $amenityName; //as stored in DB
-					    	    
-					    	    //strip 'has' off field name
+			        $amenityName = $finfo->name;
+			                
+			        // if a field starts with 'has'        
+			                
+			        if (substr($amenityName, 0, 3) == "has") {
+			        
+			        	// if that field has a value of one, let's grab that amenity name
+			        	
+			        	if ($obj->$amenityName == 1) {
 				        	
-								$name = substr($name, 3);
-								
-								//turn camel case into separate words
-								
-								$pattern = '/(.*?[a-z]{1})([A-Z]{1}.*?)/';
-								$replace = '${1} ${2}'; 
-								
-								$amenity = preg_replace($pattern, $replace, $name);
-								
-								$amenities[$i] = $amenity;
-
-					    	    $i++;
-					        	
-				        	}
-					        
-				        }
-				    
-				    }
-		
-					// TODO: build a location object to pass around instead of a bunch of vars
-		
-					$id = $obj->id;
-					$name = $obj->name;
-					$address = $obj->address;
-					$city = $obj->city;
-					$province = $obj->province;
-					$lat = $obj->lat;
-					$lng = $obj->lng;
-					$externalId = $obj->externalId;
-					$externalUrl = $obj->externalUrl;
-					$description = $obj->description;
-					$schedule = $obj->schedule;
-					$tags = $obj->tags;
-					$cost = $obj->cost;
-					$likes = $obj->recommended;
-					$schedule = $obj->schedule;
-					$phone = $obj->phone;
-					
-				}
+				        	// strip 'has' off field name
+			        	
+							$amenityName = substr($amenityName, 3);
+														
+							// turn camel case into separate words
+							
+							$pattern = '/(.*?[a-z]{1})([A-Z]{1}.*?)/';
+							$replace = '${1} ${2}'; 
+							$amenity = preg_replace($pattern, $replace, $amenityName);
 			
-			/* free result set */
-			$result->close();	
+							// add the amenity to a handy array
+				        
+				    	    $amenities[$i] = $amenity;
+				    	    
+				    	    $i++;
+				    	    
+			        	}
+				        
+			        }
+			    
+			    }
+				
+				// add the amenity array to the object
+				
+				$obj->amenities = $amenities;
+				
+				$json = json_encode($obj);
+					
+				/* free result set */
+				$result->close();	
 			
 			}
 		
 			// close connection
 			
-			// pretty up some other useful vars
-			
-			$shortname = str_replace(' ', '', $name);
-			$urlName = str_replace(' ', '-', $name); 
-			$urlName = str_replace('.', '', $urlName);
-		
 			$mysqli->close();
 		
 		}
 		
-		return $name;	
+		return $json;	
 		
 	}
 

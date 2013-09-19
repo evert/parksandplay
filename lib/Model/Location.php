@@ -16,7 +16,7 @@ class Location {
 		
 		if (mysqli_connect_errno()) {
 			
-		    die("Unable to connect!");
+		    throw new Exception('Error trying to connect to mysql: ' . $mysqli->connect_error);
 		
 		} else {
 		

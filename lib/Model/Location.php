@@ -79,8 +79,6 @@ class Location {
 				// add the amenity array to the object
 				
 				$obj->amenities = $amenities;
-				
-				$json = json_encode($obj);
 					
 				/* free result set */
 				$result->close();	
@@ -93,7 +91,7 @@ class Location {
 		
 		}
 		
-		return $json;	
+		return $obj;	
 		
 	}
 

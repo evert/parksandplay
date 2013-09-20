@@ -18,9 +18,9 @@ $app->get('/location/:id', function ($id) {
     
     $location = new Model\Location();
     
-    $locationInfoJson = $location->getLocationById($id);
+    $locationInfo = $location->getLocationById($id);
   
-	echo $locationInfoJson;
+	print_r($locationInfo);
     
 });
 

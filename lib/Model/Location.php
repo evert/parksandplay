@@ -4,33 +4,21 @@ namespace Model;
 
 class Location {
 
+    protected $app;
+
+    public function __construct(\Slim\Slim $app) {
+
+        $this->app = $app;
+
+    }
+
     public function getLocationById($id) {
 
-        // create mysqli object
+        $query = "SELECT * FROM `locations` WHERE id = ?";
+        $stmt = $this->app->db->prepare($query);
+        $stmt->execute(array($id));
 
-        include(__CONFIG_PATH.'/config.php');
-
-        $mysqli = new \mysqli($host, $user, $pass, $db);
-
-        // check for connection errors
-
-        if (mysqli_connect_errno()) {
-
-            throw new Exception('Error trying to connect to mysql: ' . $mysqli->connect_error);
-
-        }
-
-        $query = "SELECT * FROM `locations` WHERE id = " . $id;
-
-        $result = $mysqli->query($query);
-
-        if (!$result) {
-
-            throw new Exception('Invalid query: ' . $mysqli->error);
-
-        }
-
-        $obj = $result->fetch_object();
+        $obj = $stmt->fetch(\PDO::FETCH_OBJ);
 
         // add some other handy version of the name
 
@@ -79,9 +67,6 @@ class Location {
         // add the amenity array to the object
 
         $obj->amenities = $amenities;
-
-        /* free result set */
-        $result->close();
 
         return $obj;
 

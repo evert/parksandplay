@@ -13,10 +13,23 @@ define ('__CONFIG_PATH', $config_path);
 require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
+$app->config = include __DIR__ . '/config/config.php';
 
-$app->get('/location/:id', function ($id) {
+// Setting up the database.
+$app->db = new PDO(
+    'mysql:host=' . $app->config['db.host'] . ';dbname=' . $app->config['db.db'],
+    $app->config['db.user'],
+    $app->config['db.pass']
+);
+
+// Automatically throwing errors when a mistake was made.
+$app->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Database
+
+$app->get('/location/:id', function ($id) use ($app) {
     
-    $location = new Model\Location();
+    $location = new Model\Location($app);
     
     $locationInfo = $location->getLocationById($id);
   

@@ -18,57 +18,34 @@ class Location {
         $stmt = $this->app->db->prepare($query);
         $stmt->execute(array($id));
 
-        $obj = $stmt->fetch(\PDO::FETCH_OBJ);
+        $record = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // add some other handy version of the name
 
-        $obj->shortname = str_replace(' ', '', $obj->name);
-        $urlName = str_replace(' ', '-', $obj->name);
-        $obj->urlName = str_replace('.', '', $urlName);
+        $record['shortname'] = str_replace(' ', '', $record['name']);
+        $urlName = str_replace(' ', '-', $record['name']);
+        $record['urlName'] = str_replace('.', '', $record['urlName']);
 
-        // create array of amenities
+        $record['amenities'] = array();
 
-        $i = 0;
-
-        while ($finfo = $result->fetch_field()) {
-
-            $amenityName = $finfo->name;
+        foreach($record as $key=>$value) {
 
             // if a field starts with 'has'
-
-            if (substr($amenityName, 0, 3) == "has") {
+            if (substr($key, 0, 3) === 'has') {
 
                 // if that field has a value of one, let's grab that amenity name
-
-                if ($obj->$amenityName == 1) {
-
-                    // strip 'has' off field name
-
-                    $amenityName = substr($amenityName, 3);
-
-                    // turn camel case into separate words
-
-                    $pattern = '/(.*?[a-z]{1})([A-Z]{1}.*?)/';
-                    $replace = '${1} ${2}';
-                    $amenity = preg_replace($pattern, $replace, $amenityName);
-
-                    // add the amenity to a handy array
-
-                    $amenities[$i] = $amenity;
-
-                    $i++;
-
+                if ($value) {
+                    $record['aminities'][] = substr($key,3);
                 }
+
+                // Removing the original hasX item from the array
+                unset($record[$key]);
 
             }
 
         }
 
-        // add the amenity array to the object
-
-        $obj->amenities = $amenities;
-
-        return $obj;
+        return $record;
 
     }
 

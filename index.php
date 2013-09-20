@@ -20,13 +20,13 @@ $app->get('/location/:id', function ($id) {
     
     $locationInfo = $location->getLocationById($id);
   
-	print_r($locationInfo);
+    print_r($locationInfo);
     
 });
 
-$app->get('/location', function () {
+$app->get('/location', function () use ($app) {
     
-    $location = new Model\Location();
+    $location = new Model\Location($app);
     
     $amenity = $_GET['amenity'];
     
